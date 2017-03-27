@@ -1,7 +1,8 @@
 %Most of the conventions used are similar to those in "Nested Sparse Approximation: Structured Estimation of V2V Channels Using Geometry-Based Stochastic Channel Model"
-K = 50; %100
-M = 180; %256
-Nr = 100; %200
+K = 50; 
+M = 180; 
+Nr = 100; 
+%reading the data from "h_t.txt" which has details about the channel impulse response
 h_n_m = dlmread('h_t-v5.txt');
 H_k_m = zeros(2*K+1,M);
 %finding DFT
@@ -22,16 +23,21 @@ for m=1:M
         j=j+1;
     end
 end
+
 S = zeros(Nr,N); %input block data matrix of size Nr x N
-omega = zeros(Nr, 2*K+1); % vandermonde matrix , size Nr x (2K+1)
+
+ % Creating a vandermonde matrix of size Nr x (2K+1)
+omega = zeros(Nr, 2*K+1);
 S_m = zeros(Nr, Nr); %size Nr x Nr
-%defining vandermonde matrix
+
+%Updating the vandermonde matrix
 for i=0:Nr-1
     for j=0:2*K
         omega(i+1,j+1)=(cos(2*pi/(2*K+1))+sin(2*pi/(2*K+1))*sqrt(-1))^(i*(j-K));
     end
 end
 p=1;
+
 %defining S matrix
 for m=0:M-1
     for n=0:Nr-1
@@ -64,4 +70,6 @@ ylabel('t (x10^-9 s)'), xlabel('\tau (0.01x10^-6s)'), zlabel('h[n,m]');
 x_mod = abs(x);
 figure(4);
 bar(x_mod,0.01);
-%dlmwrite('S-v4.txt',S);
+
+%writing the data into a file
+dlmwrite('S-v4.txt',S);
